@@ -1,0 +1,75 @@
+# controller
+ND-Netatmo-NAME = Netatmo Weather Station
+ND-Netatmo-ICON = Weather
+CMD-ctl-DISCOVER-NAME = Re-Discover
+CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
+CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove Notices
+ST-ctl-ST-NAME = NodeServer Online
+
+ND-mainModuleNetatmo-NAME = Main Weather Station
+ND-mainModuleNetatmo-ICON = Weather
+ST-MAIM-ST-NAME = Connected
+ST-MAIM-GV0-NAME = Temperature
+ST-MAIM-GV1-NAME = CO2
+ST-MAIM-GV2-NAME = Humidity
+ST-MAIM-GV3-NAME = Noise
+ST-MAIM-GV4-NAME = Pressure
+ST-MAIM-GV5-NAME = Absolute Pressure
+ST-MAIM-GV6-NAME = Min Temperature
+ST-MAIM-GV7-NAME = Max Temperature
+ST-MAIM-GV8-NAME = Temperature Trend
+ST-MAIM-GV9-NAME = Pressure Trend
+ST-MAIM-GV10-NAME = Timestamp
+ST-MAIM-GV11-NAME = Wi-Fi Status
+
+ND-indoorModuleNetatmo-NAME = Indoor Module
+ND-indoorModuleNetatmo-ICON = Weather
+ST-INDM-ST-NAME = Connected
+ST-INDM-GV0-NAME = Temperature
+ST-INDM-GV1-NAME = CO2
+ST-INDM-GV2-NAME = Humidity
+ST-INDM-GV3-NAME = Min Temperature
+ST-INDM-GV4-NAME = Max Temperature
+ST-INDM-GV5-NAME = Temperature Trend
+ST-INDM-GV6-NAME = Timestamp
+ST-INDM-GV7-NAME = Battery
+ST-INDM-GV8-NAME = RF Status
+
+ND-outdoorModuleNetatmo-NAME = Indoor Module
+ND-outdoorModuleNetatmo-ICON = Weather
+ST-OUTM-ST-NAME = Connected
+ST-OUTM-GV0-NAME = Temperature
+ST-OUTM-GV1-NAME = Humidity
+ST-OUTM-GV2-NAME = Min Temperature
+ST-OUTM-GV3-NAME = Max Temperature
+ST-OUTM-GV4-NAME = Temperature Trend
+ST-OUTM-GV5-NAME = Timestamp
+ST-OUTM-GV6-NAME = Battery
+ST-OUTM-GV7-NAME = RF Status
+
+ND-windModuleNetatmo-NAME = Wind Module
+ND-windModuleNetatmo-ICON = Weather
+ST-WINM-ST-NAME = Connected
+ST-WINM-GV0-NAME = Wind Strength
+ST-WINM-GV1-NAME = Wind Angle
+ST-WINM-GV2-NAME = Gust Strength
+ST-WINM-GV3-NAME = Gust Angle
+ST-WINM-GV4-NAME = Max Wind Strength
+ST-WINM-GV5-NAME = Max Wind Angle
+ST-WINM-GV6-NAME = Timestamp
+ST-WINM-GV7-NAME = Battery
+ST-WINM-GV8-NAME = RF Status
+
+ND-rainModuleNetatmo-NAME = Rain Module
+ND-rainModuleNetatmo-ICON = Weather
+ST-RAIM-ST-NAME = Connected
+ST-RAIM-GV0-NAME = Rain
+ST-RAIM-GV1-NAME = Sum Rain 1h
+ST-RAIM-GV2-NAME = Sum Rain 24h
+ST-RAIM-GV3-NAME = Timestamp
+ST-RAIM-GV4-NAME = Battery
+ST-RAIM-GV5-NAME = RF Status
+
+EN_TREND-0 = Stable
+EN_TREND-1 = Up
+EN_TREND-2 = Down

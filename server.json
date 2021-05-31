@@ -1,0 +1,23 @@
+{
+    "name": "Netatmo-WeatherStation",
+    "docs": "https://github.com/danielcaldentey/udi-netatmo",
+    "type": "python3",
+    "executable": "mainNetatmo.py",
+    "install": "install.sh",
+    "install_cloud": "install_cloud.sh",
+    "description": "Netatmo Weather Station Status",
+    "notice": "",
+    "shortPoll": "600",
+    "longPoll": "1200",
+    "profile_version": "0.0.1",
+    "credits": [
+    	{
+    		"title": "Netatmo Weather Station: A node server to view Netatmo Weather Station",
+    		"author": "Dani",
+    		"version": "0.0.1",
+    		"date": "May 28, 2021",
+    		"source": "https://github.com/danielcaldentey/udi-netatmo",
+		    "license": "https://github.com/danielcaldentey/udi-netatmo/LICENSE"
+		}
+	]
+}

@@ -1,0 +1,116 @@
+<nodeDefs>
+  <nodeDef id="Netatmo" nls="ctl">
+    <editors />
+    <sts>
+      <st id="ST" editor="bool" />
+    </sts>
+    <cmds>
+      <sends />
+      <accepts>
+        <cmd id="DISCOVER" />
+        <cmd id="REMOVE_NOTICES_ALL" />
+        <cmd id="UPDATE_PROFILE" />
+      </accepts>
+    </cmds>
+  </nodeDef>
+
+  <nodeDef id="mainModuleNetatmo" nls="MAIM">
+    <sts>
+      <st id="ST" editor="bool" />
+      <st id="GV0" editor="temperature" />
+      <st id="GV1" editor="co2" />
+      <st id="GV2" editor="humidity" />
+      <st id="GV3" editor="noise" />
+      <st id="GV4" editor="pressure" />
+      <st id="GV5" editor="pressure" />
+      <st id="GV6" editor="temperature" />
+      <st id="GV7" editor="temperature" />
+      <st id="GV8" editor="trend" />
+      <st id="GV9" editor="trend" />
+      <st id="GV10" editor="t_timestamp" />
+      <st id="GV11" editor="wifi_rf_status" />
+    </sts>
+    <cmds>
+      <sends />
+      <accepts>
+      </accepts>
+    </cmds>
+  </nodeDef>
+
+  <nodeDef id="indoorModuleNetatmo" nls="INDM">
+    <sts>
+      <st id="ST" editor="bool" />
+      <st id="GV0" editor="temperature" />
+      <st id="GV1" editor="co2" />
+      <st id="GV2" editor="humidity" />
+      <st id="GV3" editor="temperature" />
+      <st id="GV4" editor="temperature" />
+      <st id="GV5" editor="trend" />
+      <st id="GV6" editor="t_timestamp" />
+      <st id="GV7" editor="percent" />
+      <st id="GV8" editor="wifi_rf_status" />
+    </sts>
+    <cmds>
+      <sends />
+      <accepts>
+      </accepts>
+    </cmds>
+  </nodeDef>
+
+  <nodeDef id="outdoorModuleNetatmo" nls="OUTM">
+    <sts>
+      <st id="ST" editor="bool" />
+      <st id="GV0" editor="temperature" />
+      <st id="GV1" editor="humidity" />
+      <st id="GV2" editor="temperature" />
+      <st id="GV3" editor="temperature" />
+      <st id="GV4" editor="trend" />
+      <st id="GV5" editor="t_timestamp" />
+      <st id="GV6" editor="percent" />
+      <st id="GV7" editor="wifi_rf_status" />
+    </sts>
+    <cmds>
+      <sends />
+      <accepts>
+      </accepts>
+    </cmds>
+  </nodeDef>
+
+  <nodeDef id="windModuleNetatmo" nls="WINM">
+    <sts>
+      <st id="ST" editor="bool" />
+      <st id="GV0" editor="w_strength" />
+      <st id="GV1" editor="w_angle" />
+      <st id="GV2" editor="w_strength" />
+      <st id="GV3" editor="w_angle" />
+      <st id="GV4" editor="w_strength" />
+      <st id="GV5" editor="w_angle" />
+      <st id="GV6" editor="t_timestamp" />
+      <st id="GV7" editor="percent" />
+      <st id="GV8" editor="wifi_rf_status" />
+    </sts>
+    <cmds>
+      <sends />
+      <accepts>
+      </accepts>
+    </cmds>
+  </nodeDef>
+
+  <nodeDef id="rainModuleNetatmo" nls="RAIM">
+    <sts>
+      <st id="ST" editor="bool" />
+      <st id="GV0" editor="rain" />
+      <st id="GV1" editor="rain" />
+      <st id="GV2" editor="rain" />
+      <st id="GV3" editor="t_timestamp" />
+      <st id="GV4" editor="percent" />
+      <st id="GV5" editor="wifi_rf_status" />
+    </sts>
+    <cmds>
+      <sends />
+      <accepts>
+      </accepts>
+    </cmds>
+  </nodeDef>
+
+</nodeDefs>
