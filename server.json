@@ -1,5 +1,5 @@
 {
-    "name": "Netatmo-WeatherStation",
+    "name": "Netatmo-WS",
     "docs": "https://github.com/danielcaldentey/udi-netatmo",
     "type": "python3",
     "executable": "mainNetatmo.py",
