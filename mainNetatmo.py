@@ -23,8 +23,8 @@ class Controller(polyinterface.Controller):
     id = 'Netatmo'
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
-        self.name = 'Netatmo-Weather'
-        self.address = 'weather station'
+        self.name = 'Netatmo Weather Station'
+        self.address = 'WStation'
         self.primary = self.address
         self.configured = False
         self.myConfig = {}
@@ -127,7 +127,7 @@ class Controller(polyinterface.Controller):
             LOGGER.info('Module name = ' + moduleName)
             #Master Module
             LOGGER.info('Master Module')
-            weatherStation_node = mainModuleNode(self, self.address, "Master Module",i)
+            weatherStation_node = mainModuleNode(self, self.address, "Master Module","Netatmo" + i)
             weatherStation_node.lastData = self.lastData
             weatherStation_node.name = moduleName
             self.addNode(weatherStation_node)
