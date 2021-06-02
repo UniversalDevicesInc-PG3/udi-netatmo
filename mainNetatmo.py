@@ -103,7 +103,7 @@ class Controller(polyinterface.Controller):
                 self.lastData = self.weatherStation.lastData()
                 self.nodes[node].weatherStation = self.weatherStation
                 self.nodes[node].lastData = self.lastData
-                self.nodes[node].get_status(True)
+                self.nodes[node].get_status(False)
 
     def query(self):
         LOGGER.info('QUERY Controller')
@@ -242,7 +242,7 @@ class mainModuleNode(polyinterface.Node):
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
             {'driver': 'GV0', 'value': 0, 'uom': 17},   # temperature fahrenheit
             {'driver': 'GV1', 'value': 0, 'uom': 54},   # CO2
-            {'driver': 'GV2', 'value': 0, 'uom': 21},   # humidity
+            {'driver': 'GV2', 'value': 0, 'uom': 22},   # humidity
             {'driver': 'GV3', 'value': 0, 'uom': 12},   # noise
             {'driver': 'GV4', 'value': 0, 'uom': 23},   # pressure
             {'driver': 'GV5', 'value': 0, 'uom': 23},   # absolute pressure
@@ -254,7 +254,7 @@ class mainModuleNode(polyinterface.Node):
             {'driver': 'GV11', 'value': 0, 'uom': 56},   # wifi status
             ]
 
-    def get_temp(self, temp_value):
+    def get_temperature(self, temp_value):
         try:
             temp_value = temp_value / 5
             temp_value = temp_value * 9
@@ -308,11 +308,11 @@ class mainModuleNode(polyinterface.Node):
             n_tempTrend = self.temp_trend(json)
             n_pressureTrend = self.pressure_trend(json)
             n_temperature = json['Temperature']
-            n_temperature = self.get_temp(n_temperature)
+            n_temperature = self.get_temperature(n_temperature)
             n_minTemp = json['min_temp']
-            n_minTemp = self.get_temp(n_minTemp)
+            n_minTemp = self.get_temperature(n_minTemp)
             n_maxTemp = json['max_temp']
-            n_maxTemp = self.get_temp(n_maxTemp)
+            n_maxTemp = self.get_temperature(n_maxTemp)
             n_pressure = json['Pressure']
             n_pressure = self.get_pressure(n_pressure)
             n_absolutePressure = json['AbsolutePressure']
@@ -374,7 +374,7 @@ class mainModuleNode(polyinterface.Node):
     #        }
 
 class indoorModuleNode(polyinterface.Node):
-    id = 'indoorModuleNetatmo'
+    id = 'in_netatmo'
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
@@ -455,7 +455,7 @@ class indoorModuleNode(polyinterface.Node):
         return True
 
 class outdoorModuleNode(polyinterface.Node):
-    id = 'outdoorModuleNetatmo'
+    id = 'out_netatmo'
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
@@ -532,7 +532,7 @@ class outdoorModuleNode(polyinterface.Node):
         return True
 
 class windModuleNode(polyinterface.Node):
-    id = 'windModuleNetatmo'
+    id = 'wind_netatmo'
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
@@ -599,7 +599,7 @@ class windModuleNode(polyinterface.Node):
         return True
 
 class rainModuleNode(polyinterface.Node):
-    id = 'rainModuleNetatmo'
+    id = 'rain_netatmo'
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
