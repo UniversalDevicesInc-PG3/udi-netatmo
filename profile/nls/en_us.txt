@@ -22,8 +22,8 @@ ST-MAIM-GV9-NAME = Pressure Trend
 ST-MAIM-GV10-NAME = Timestamp
 ST-MAIM-GV11-NAME = Wi-Fi Status
 
-ND-indoorModuleNetatmo-NAME = Indoor Module
-ND-indoorModuleNetatmo-ICON = Weather
+ND-in_netatmo-NAME = Indoor Module
+ND-in_netatmo-ICON = Weather
 ST-INDM-ST-NAME = Connected
 ST-INDM-GV0-NAME = Temperature
 ST-INDM-GV1-NAME = CO2
@@ -35,8 +35,8 @@ ST-INDM-GV6-NAME = Timestamp
 ST-INDM-GV7-NAME = Battery
 ST-INDM-GV8-NAME = RF Status
 
-ND-outdoorModuleNetatmo-NAME = Indoor Module
-ND-outdoorModuleNetatmo-ICON = Weather
+ND-out_netatmo-NAME = Indoor Module
+ND-out_netatmo-ICON = Weather
 ST-OUTM-ST-NAME = Connected
 ST-OUTM-GV0-NAME = Temperature
 ST-OUTM-GV1-NAME = Humidity
@@ -47,8 +47,8 @@ ST-OUTM-GV5-NAME = Timestamp
 ST-OUTM-GV6-NAME = Battery
 ST-OUTM-GV7-NAME = RF Status
 
-ND-windModuleNetatmo-NAME = Wind Module
-ND-windModuleNetatmo-ICON = Weather
+ND-wind_netatmo-NAME = Wind Module
+ND-wind_netatmo-ICON = Weather
 ST-WINM-ST-NAME = Connected
 ST-WINM-GV0-NAME = Wind Strength
 ST-WINM-GV1-NAME = Wind Angle
@@ -60,8 +60,8 @@ ST-WINM-GV6-NAME = Timestamp
 ST-WINM-GV7-NAME = Battery
 ST-WINM-GV8-NAME = RF Status
 
-ND-rainModuleNetatmo-NAME = Rain Module
-ND-rainModuleNetatmo-ICON = Weather
+ND-rain_netatmo-NAME = Rain Module
+ND-rain_netatmo-ICON = Weather
 ST-RAIM-ST-NAME = Connected
 ST-RAIM-GV0-NAME = Rain
 ST-RAIM-GV1-NAME = Sum Rain 1h

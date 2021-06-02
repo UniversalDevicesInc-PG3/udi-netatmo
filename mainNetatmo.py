@@ -254,6 +254,24 @@ class mainModuleNode(polyinterface.Node):
             {'driver': 'GV11', 'value': 0, 'uom': 56},   # wifi status
             ]
 
+    def get_temp(temp_value):
+        try:
+            temp_value = temp_value / 5
+            temp_value = temp_value * 9
+            temp_value = temp_value + 32
+            return temp_value
+        except:
+            LOGGER.info('Failed to convert temperature')
+        return 0
+
+    def get_pressure(pressure_value):
+        try:
+            pressure_value = pressure_value * 0.02953
+            return pressure_value
+        except:
+            LOGGER.info('Failed to convert temperature')
+        return 0
+
     def temp_trend(self, json):
         try:
             nodeStat = json['temp_trend']
@@ -289,16 +307,21 @@ class mainModuleNode(polyinterface.Node):
 
             n_tempTrend = self.temp_trend(json)
             n_pressureTrend = self.pressure_trend(json)
+            n_temperature = json['Temperature']
+            n_temperature = self.get_temp(n_temperature)
+            n_minTemp = json['min_temp']
+            n_minTemp = self.get_temp(n_minTemp)
+            n_maxTemp = json['max_temp']
+            n_maxTemp = self.get_temp(n_maxTemp)
+            n_pressure = json['Pressure']
+            n_pressure = self.get_pressure(n_pressure)
+            n_absolutePressure = json['AbsolutePressure']
+            n_absolutePressure = self.get_pressure(n_absolutePressure)
             try:
                 n_status = 1
-                n_temperature = json['Temperature']
                 n_CO2 = json['CO2']
                 n_humidity = json['Humidity']
                 n_noise = json['Noise']
-                n_pressure = json['Pressure']
-                n_absolutePressure = json['AbsolutePressure']
-                n_minTemp = json['min_temp']
-                n_maxTemp = json['max_temp']
                 n_when = json['When']
                 n_when = n_when / 10
                 n_wifiStatus = json['wifi_status']
