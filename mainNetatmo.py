@@ -19,6 +19,35 @@ import lnetatmo
 
 LOGGER = polyinterface.LOGGER
 
+def round_half_up(self, num, decimals = 0):
+    temp_dec = 10 ** decimals
+    result = num * temp_dec
+    result = result + 0.5
+    result = int(result)
+    result = result / temp_dec
+    return result
+
+def get_temperature(self, temp_value):
+    try:
+        temp_value = temp_value / 5
+        temp_value = temp_value * 9
+        temp_value = temp_value + 32
+        temp_value = round_half_up(temp_value,1)
+        return temp_value
+    except:
+        LOGGER.info('Failed to convert temperature')
+    return 0
+
+def get_pressure(self, pressure_value):
+    try:
+        pressure_value = pressure_value * 0.02953
+        pressure_value = round_half_up(pressure_value,2)
+        return pressure_value
+    except:
+        LOGGER.info('Failed to convert temperature')
+    return 0
+
+
 class Controller(polyinterface.Controller):
     id = 'Netatmo'
     def __init__(self, polyglot):
@@ -273,7 +302,7 @@ class mainModuleNode(polyinterface.Node):
         LOGGER.info('GET STATUS Main Module')
         try:
             LOGGER.info('Get Staus - MainModule 1')
-            json = self.lastData['Master Bedroom']
+            json = self.lastData[self.name]
             LOGGER.debug(json)
 
             n_tempTrend = self.temp_trend(json)
@@ -360,7 +389,7 @@ class indoorModuleNode(polyinterface.Node):
     def get_status(self, first):
         LOGGER.info('GET STATUS Indoor Module')
         try:
-            json = self.lastData[name]
+            json = self.lastData[self.name]
             LOGGER.debug(json)
 
             n_tempTrend = self.temp_trend(json)
@@ -434,7 +463,7 @@ class outdoorModuleNode(polyinterface.Node):
     def get_status(self, first):
         LOGGER.info('GET STATUS Outdoor Module')
         try:
-            json = self.lastData[name]
+            json = self.lastData[self.name]
             LOGGER.debug(json)
 
             n_tempTrend = self.temp_trend(json)
@@ -494,7 +523,7 @@ class windModuleNode(polyinterface.Node):
     def get_status(self, first):
         LOGGER.info('GET STATUS Wind Module')
         try:
-            json = self.lastData[name]
+            json = self.lastData[self.name]
             LOGGER.debug(json)
 
             try:
@@ -549,7 +578,7 @@ class rainModuleNode(polyinterface.Node):
     def get_status(self, first):
         LOGGER.info('GET STATUS Rain Module')
         try:
-            json = self.lastData[name]
+            json = self.lastData[self.name]
             LOGGER.debug(json)
 
             try:
@@ -581,33 +610,6 @@ class rainModuleNode(polyinterface.Node):
             return False
         return True
 
-def round_half_up(self, num, decimals = 0):
-    temp_dec = 10 ** decimals
-    result = num * temp_dec
-    result = result + 0.5
-    result = int(result)
-    result = result / temp_dec
-    return result
-
-def get_temperature(self, temp_value):
-    try:
-        temp_value = temp_value / 5
-        temp_value = temp_value * 9
-        temp_value = temp_value + 32
-        temp_value = round_half_up(temp_value,1)
-        return temp_value
-    except:
-        LOGGER.info('Failed to convert temperature')
-    return 0
-
-def get_pressure(self, pressure_value):
-    try:
-        pressure_value = pressure_value * 0.02953
-        pressure_value = round_half_up(pressure_value,2)
-        return pressure_value
-    except:
-        LOGGER.info('Failed to convert temperature')
-    return 0
 
 if __name__ == "__main__":
     try:
