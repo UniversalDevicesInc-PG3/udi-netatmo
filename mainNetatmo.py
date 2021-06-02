@@ -127,7 +127,7 @@ class Controller(polyinterface.Controller):
             LOGGER.info('Module name = ' + moduleName)
             #Master Module
             LOGGER.info('Master Module')
-            addressName = "Netatmo"+i
+            addressName = "Netatmo"+str(i)
             weatherStation_node = mainModuleNode(self, self.address, "Master Module",addressName)
             weatherStation_node.lastData = self.lastData
             weatherStation_node.name = moduleName
