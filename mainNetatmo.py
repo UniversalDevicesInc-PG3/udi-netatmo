@@ -24,7 +24,7 @@ class Controller(polyinterface.Controller):
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
         self.name = 'Netatmo Weather Station'
-        self.address = 'WStation'
+        self.address = 'Netatmo-WS'
         self.primary = self.address
         self.configured = False
         self.myConfig = {}
@@ -123,16 +123,15 @@ class Controller(polyinterface.Controller):
             self.lastData = self.weatherStation.lastData()
             LOGGER.info('Weather Station Name = ' + self.weatherStation.default_home)
             moduleName = 'Master Bedroom'
-            i = 0
             LOGGER.info('Module name = ' + moduleName)
+            i=0
             #Master Module
             LOGGER.info('Master Module')
-            addressName = "Netatmo"+str(i)
-            weatherStation_node = mainModuleNode(self, self.address, "Master Module",addressName)
+            weatherStation_node = mainModuleNode(self, self.address, "NetWSMain",moduleName)
             weatherStation_node.lastData = self.lastData
             weatherStation_node.name = moduleName
             self.addNode(weatherStation_node)
-            self.nodes['Master Module'].get_status(True)
+            self.nodes['NetWSMain'].get_status(True)
 
             #i = 0
             #for moduleName in self.lastData.keys():
@@ -285,7 +284,7 @@ class mainModuleNode(polyinterface.Node):
         LOGGER.info('GET STATUS Main Module')
         try:
             LOGGER.info('Get Staus - MainModule 1')
-            json = self.lastData[self.name]
+            json = self.lastData['Master Bedroom']
             LOGGER.debug(json)
 
             n_tempTrend = self.temp_trend(json)
