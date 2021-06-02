@@ -98,7 +98,7 @@ class Controller(polyinterface.Controller):
     def shortPoll(self):
         LOGGER.info('Short Poll 1')
         for node in self.nodes:
-            if self.nodes[node].id == 'mainModuleNetatmo':
+            if self.nodes[node].id == 'main_netatmo':
                 self.weatherStation = lnetatmo.WeatherStationData(self.session)
                 self.lastData = self.weatherStation.lastData()
                 self.nodes[node].weatherStation = self.weatherStation
@@ -235,7 +235,7 @@ class Controller(polyinterface.Controller):
             ]
 
 class mainModuleNode(polyinterface.Node):
-    id = 'mainModuleNetatmo'
+    id = 'main_netatmo'
     name = ''
     lastData = None
     drivers = [
