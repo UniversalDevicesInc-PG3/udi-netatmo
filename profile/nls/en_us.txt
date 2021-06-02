@@ -6,8 +6,8 @@ CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
 CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove Notices
 ST-ctl-ST-NAME = NodeServer Online
 
-ND-mainModuleNetatmo-NAME = Main Weather Station
-ND-mainModuleNetatmo-ICON = Weather
+ND-main_netatmo-NAME = Main Weather Station
+ND-main_netatmo-ICON = Weather
 ST-MAIM-ST-NAME = Connected
 ST-MAIM-GV0-NAME = Temperature
 ST-MAIM-GV1-NAME = CO2

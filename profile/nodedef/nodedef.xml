@@ -14,7 +14,7 @@
     </cmds>
   </nodeDef>
 
-  <nodeDef id="mainModuleNetatmo" nls="MAIM">
+  <nodeDef id="main_netatmo" nls="MAIM">
     <sts>
       <st id="ST" editor="bool" />
       <st id="GV0" editor="temperature" />
