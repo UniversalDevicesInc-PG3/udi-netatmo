@@ -407,7 +407,7 @@ class indoorModuleNode(polyinterface.Node):
                 n_when = json['When']
                 n_when = n_when / 10
                 n_batteryPercent = json['battery_percent']
-                n_rfStatus = json['wifi_status']
+                n_rfStatus = json['rf_status']
 
                 try:
                     self.setDriver('ST', n_status, report=True, force=first)
@@ -480,7 +480,7 @@ class outdoorModuleNode(polyinterface.Node):
                 n_when = json['When']
                 n_when = n_when / 10
                 n_batteryPercent = json['battery_percent']
-                n_rfStatus = json['wifi_status']
+                n_rfStatus = json['rf_status']
 
                 try:
                     self.setDriver('ST', n_status, report=True, force=first)
@@ -537,7 +537,7 @@ class windModuleNode(polyinterface.Node):
                 n_when = json['When']
                 n_when = n_when / 10
                 n_batteryPercent = json['battery_percent']
-                n_rfStatus = json['wifi_status']
+                n_rfStatus = json['rf_status']
 
                 try:
                     self.setDriver('ST', n_status, report=True, force=first)
@@ -589,7 +589,7 @@ class rainModuleNode(polyinterface.Node):
                 n_when = json['When']
                 n_when = n_when / 10
                 n_batteryPercent = json['battery_percent']
-                n_rfStatus = json['wifi_status']
+                n_rfStatus = json['rf_status']
 
                 try:
                     self.setDriver('ST', n_status, report=True, force=first)
