@@ -254,7 +254,7 @@ class mainModuleNode(polyinterface.Node):
             {'driver': 'GV11', 'value': 0, 'uom': 56},   # wifi status
             ]
 
-    def get_temp(temp_value):
+    def get_temp(self, temp_value):
         try:
             temp_value = temp_value / 5
             temp_value = temp_value * 9
@@ -264,7 +264,7 @@ class mainModuleNode(polyinterface.Node):
             LOGGER.info('Failed to convert temperature')
         return 0
 
-    def get_pressure(pressure_value):
+    def get_pressure(self, pressure_value):
         try:
             pressure_value = pressure_value * 0.02953
             return pressure_value
