@@ -310,7 +310,7 @@ class mainModuleNode(polyinterface.Node):
             n_temperature = json['Temperature']
             n_temperature = get_temperature(n_temperature)
             n_minTemp = json['min_temp']
-            n_minTemp = (n_minTemp)
+            n_minTemp = get_temperature(n_minTemp)
             n_maxTemp = json['max_temp']
             n_maxTemp = get_temperature(n_maxTemp)
             n_pressure = json['Pressure']
@@ -396,7 +396,7 @@ class indoorModuleNode(polyinterface.Node):
             n_temperature = json['Temperature']
             n_temperature = get_temperature(n_temperature)
             n_minTemp = json['min_temp']
-            n_minTemp = (n_minTemp)
+            n_minTemp = get_temperature(n_minTemp)
             n_maxTemp = json['max_temp']
             n_maxTemp = get_temperature(n_maxTemp)
 
@@ -470,7 +470,7 @@ class outdoorModuleNode(polyinterface.Node):
             n_temperature = json['Temperature']
             n_temperature = get_temperature(n_temperature)
             n_minTemp = json['min_temp']
-            n_minTemp = (n_minTemp)
+            n_minTemp = get_temperature(n_minTemp)
             n_maxTemp = json['max_temp']
             n_maxTemp = get_temperature(n_maxTemp)
 
