@@ -125,7 +125,7 @@ class Controller(polyinterface.Controller):
             i = 0
             nodeAddress = ''
             for moduleName in self.lastData.keys():
-            LOGGER.info('Module name = ' + moduleName)
+                LOGGER.info('Module name = ' + moduleName)
                 if 'Noise' in self.lastData[moduleName]:
                     #Master Module
                     nodeAddress = 'netwsmain'
@@ -159,44 +159,6 @@ class Controller(polyinterface.Controller):
                 weatherStation_node.name = moduleName
                 self.addNode(weatherStation_node)
                 self.nodes[nodeAddress].get_status(True)
-
-            #i = 0
-            #for moduleName in self.lastData.keys():
-            #    LOGGER.info('DISC 5')
-            #    LOGGER.info('Module name = ' + moduleName)
-            #    #Check Module Type
-            #    if 'Noise' in self.lastData[moduleName]:
-            #        #Master Module
-            #        weatherStation_node = mainModuleNode(self, self.address, "Master Module",moduleName)
-            #        LOGGER.info('Master Module')
-            #    elif 'CO2' in self.lastData[moduleName]:
-            #        #Indoor Module
-            #        if i == 0:
-            #            weatherStation_node = indoorModuleNode(self, self.address, "Indoor Module 1",moduleName)
-            #        elif i == 1:
-            #            weatherStation_node = indoorModuleNode(self, self.address, "Indoor Module 2",moduleName)
-            #        else:
-            #            weatherStation_node = indoorModuleNode(self, self.address, "Indoor Module 3",moduleName)
-            #        LOGGER.info('Indoor Module')
-            #        i = i + 1
-            #    elif 'Temperature' in self.lastData[moduleName]:
-            #        #Outside Module
-            #        weatherStation_node = outdoorModuleNode(self, self.address, "Outside Module",moduleName)
-            #        LOGGER.info('Outside Module')
-            #    elif 'WindStrength' in self.lastData[moduleName]:
-            #        #Wind Module
-            #        weatherStation_node = windModuleNode(self, self.address, "Wind Module",moduleName)
-            #        LOGGER.info('Wind Module')
-            #    elif 'Rain' in self.lastData[moduleName]:
-            #        #Rain Module
-            #        weatherStation_node = rainModuleNode(self, self.address, "Rain Module",moduleName)
-            #        LOGGER.info('Rain Module')
-            #    else:
-            #        LOGGER.info('Unidentified Module')
-            #    
-            #    weatherStation_node.lastData = self.lastData
-            #    self.addNode(weatherStation_node)
-            #    self.nodes[moduleName].get_status(True)
 
         except:
             LOGGER.error('Authentication failed or no modules found.')
