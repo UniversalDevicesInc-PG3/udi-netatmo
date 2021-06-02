@@ -131,7 +131,7 @@ class Controller(polyinterface.Controller):
             weatherStation_node.lastData = self.lastData
             weatherStation_node.name = moduleName
             self.addNode(weatherStation_node)
-            self.nodes['NetWSMain'].get_status(True)
+            self.nodes['netwsmain'].get_status(True)
 
             #i = 0
             #for moduleName in self.lastData.keys():
