@@ -24,7 +24,7 @@
     </editor>
 
     <editor id="pressure">
-        <range uom="23" prec="0" />
+        <range uom="23" prec="2" />
     </editor>
 
     <editor id="trend">
