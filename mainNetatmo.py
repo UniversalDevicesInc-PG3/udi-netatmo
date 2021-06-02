@@ -254,11 +254,19 @@ class mainModuleNode(polyinterface.Node):
             {'driver': 'GV11', 'value': 0, 'uom': 56},   # wifi status
             ]
 
+    def round_half_up(self, num, decimals = 0):
+        temp_dec = 10 ** decimals
+        result = num * temp_dec
+        result = int(result)
+        result = result / temp_dec
+        return result
+
     def get_temperature(self, temp_value):
         try:
             temp_value = temp_value / 5
             temp_value = temp_value * 9
             temp_value = temp_value + 32
+            temp_value = self.round_half_up(temp_value,1)
             return temp_value
         except:
             LOGGER.info('Failed to convert temperature')
@@ -267,6 +275,7 @@ class mainModuleNode(polyinterface.Node):
     def get_pressure(self, pressure_value):
         try:
             pressure_value = pressure_value * 0.02953
+            pressure_value = self.round_half_up(pressure_value,2)
             return pressure_value
         except:
             LOGGER.info('Failed to convert temperature')
