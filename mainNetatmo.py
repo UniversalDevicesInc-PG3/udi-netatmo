@@ -97,13 +97,13 @@ class Controller(polyinterface.Controller):
 
     def shortPoll(self):
         LOGGER.info('Short Poll 1')
+        self.weatherStation = lnetatmo.WeatherStationData(self.session)
+        self.lastData = self.weatherStation.lastData()
         for node in self.nodes:
-            if self.nodes[node].id == 'main_netatmo':
-                self.weatherStation = lnetatmo.WeatherStationData(self.session)
-                self.lastData = self.weatherStation.lastData()
-                self.nodes[node].weatherStation = self.weatherStation
-                self.nodes[node].lastData = self.lastData
-                self.nodes[node].get_status(False)
+            #if self.nodes[node].id == 'main_netatmo':
+            self.nodes[node].weatherStation = self.weatherStation
+            self.nodes[node].lastData = self.lastData
+            self.nodes[node].get_status(False)
 
     def query(self):
         LOGGER.info('QUERY Controller')
@@ -122,16 +122,43 @@ class Controller(polyinterface.Controller):
             self.weatherStation = lnetatmo.WeatherStationData(self.session)
             self.lastData = self.weatherStation.lastData()
             LOGGER.info('Weather Station Name = ' + self.weatherStation.default_home)
-            moduleName = 'Master Bedroom'
+            i = 0
+            nodeAddress = ''
+            for moduleName in self.lastData.keys():
             LOGGER.info('Module name = ' + moduleName)
-            i=0
-            #Master Module
-            LOGGER.info('Master Module')
-            weatherStation_node = mainModuleNode(self, self.address, "netwsmain",moduleName)
-            weatherStation_node.lastData = self.lastData
-            weatherStation_node.name = moduleName
-            self.addNode(weatherStation_node)
-            self.nodes['netwsmain'].get_status(True)
+                if 'Noise' in self.lastData[moduleName]:
+                    #Master Module
+                    nodeAddress = 'netwsmain'
+                    weatherStation_node = mainModuleNode(self, self.address, nodeAddress,moduleName)
+                    LOGGER.info('Master Module')
+                elif 'CO2' in self.lastData[moduleName]:
+                    #Indoor Module
+                    nodeAddress = 'netwsin' + str(i)
+                    weatherStation_node = indoorModuleNode(self, self.address, nodeAddress,moduleName)
+                    LOGGER.info('Indoor Module')
+                    i = i + 1
+                elif 'Temperature' in self.lastData[moduleName]:
+                    #Outside Module
+                    nodeAddress = 'netwsout'
+                    weatherStation_node = outdoorModuleNode(self, self.address, nodeAddress,moduleName)
+                    LOGGER.info('Outside Module')
+                elif 'WindStrength' in self.lastData[moduleName]:
+                    #Wind Module
+                    nodeAddress = 'netwswind'
+                    weatherStation_node = windModuleNode(self, self.address, nodeAddress,moduleName)
+                    LOGGER.info('Wind Module')
+                elif 'Rain' in self.lastData[moduleName]:
+                    #Rain Module
+                    nodeAddress = 'netwsrain'
+                    weatherStation_node = rainModuleNode(self, self.address, nodeAddress,moduleName)
+                    LOGGER.info('Rain Module')
+                else:
+                    LOGGER.info('Unidentified Module')
+
+                weatherStation_node.lastData = self.lastData
+                weatherStation_node.name = moduleName
+                self.addNode(weatherStation_node)
+                self.nodes[nodeAddress].get_status(True)
 
             #i = 0
             #for moduleName in self.lastData.keys():
@@ -254,33 +281,6 @@ class mainModuleNode(polyinterface.Node):
             {'driver': 'GV11', 'value': 0, 'uom': 56},   # wifi status
             ]
 
-    def round_half_up(self, num, decimals = 0):
-        temp_dec = 10 ** decimals
-        result = num * temp_dec
-        result = int(result)
-        result = result / temp_dec
-        return result
-
-    def get_temperature(self, temp_value):
-        try:
-            temp_value = temp_value / 5
-            temp_value = temp_value * 9
-            temp_value = temp_value + 32
-            temp_value = self.round_half_up(temp_value,1)
-            return temp_value
-        except:
-            LOGGER.info('Failed to convert temperature')
-        return 0
-
-    def get_pressure(self, pressure_value):
-        try:
-            pressure_value = pressure_value * 0.02953
-            pressure_value = self.round_half_up(pressure_value,2)
-            return pressure_value
-        except:
-            LOGGER.info('Failed to convert temperature')
-        return 0
-
     def temp_trend(self, json):
         try:
             nodeStat = json['temp_trend']
@@ -317,13 +317,13 @@ class mainModuleNode(polyinterface.Node):
             n_tempTrend = self.temp_trend(json)
             n_pressureTrend = self.pressure_trend(json)
             n_temperature = json['Temperature']
-            n_temperature = self.get_temperature(n_temperature)
+            n_temperature = get_temperature(n_temperature)
             n_minTemp = json['min_temp']
-            n_minTemp = self.get_temperature(n_minTemp)
+            n_minTemp = (n_minTemp)
             n_maxTemp = json['max_temp']
-            n_maxTemp = self.get_temperature(n_maxTemp)
+            n_maxTemp = get_temperature(n_maxTemp)
             n_pressure = json['Pressure']
-            n_pressure = self.get_pressure(n_pressure)
+            n_pressure = get_pressure(n_pressure)
             n_absolutePressure = json['AbsolutePressure']
             n_absolutePressure = self.get_pressure(n_absolutePressure)
             try:
@@ -360,36 +360,20 @@ class mainModuleNode(polyinterface.Node):
                 LOGGER.error('Failed to parse mower status JSON')
 
         except Exception as ex:
-            LOGGER.info('In exception handler, faking mower status')
-            self.setDriver('ST', 0, report=True, force=first)
-            self.setDriver('GV0', 5, report=True, force=first)
-            self.setDriver('GV1', 0, report=True, force=first)
-            self.setDriver('GV2', 0, report=True, force=first)
-            self.setDriver('GV3', 0, report=True, force=first)
-            self.setDriver('GV4', 0, report=True, force=first)
-            self.setDriver('GV5', 0, report=True, force=first)
-            self.setDriver('GV6', 0, report=True, force=first)
-            self.setDriver('GV7', 0, report=True, force=first)
-            self.setDriver('GV8', 0, report=True, force=first)
-            self.setDriver('GV9', 0, report=True, force=first)
-            self.setDriver('GV10', 0, report=True, force=first)
-            self.setDriver('GV11', 0, report=True, force=first)
+            LOGGER.info('In exception handler, no data for this node')
             LOGGER.debug('Skipping status: ' + str(ex.args[0]))
             return False
         return True
 
-    #commands = {
-    #        'PARK': park_mower,
-    #        }
-
 class indoorModuleNode(polyinterface.Node):
     id = 'in_netatmo'
+    name = ''
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
             {'driver': 'GV0', 'value': 0, 'uom': 17},   # temperature fahrenheit
             {'driver': 'GV1', 'value': 0, 'uom': 54},   # CO2
-            {'driver': 'GV2', 'value': 0, 'uom': 21},   # humidity
+            {'driver': 'GV2', 'value': 0, 'uom': 22},   # humidity
             {'driver': 'GV3', 'value': 0, 'uom': 17},   # min temp
             {'driver': 'GV4', 'value': 0, 'uom': 17},   # max temp
             {'driver': 'GV5', 'value': 0, 'uom': 25},   # temp trend
@@ -418,14 +402,17 @@ class indoorModuleNode(polyinterface.Node):
             LOGGER.debug(json)
 
             n_tempTrend = self.temp_trend(json)
+            n_temperature = json['Temperature']
+            n_temperature = get_temperature(n_temperature)
+            n_minTemp = json['min_temp']
+            n_minTemp = (n_minTemp)
+            n_maxTemp = json['max_temp']
+            n_maxTemp = get_temperature(n_maxTemp)
 
             try:
                 n_status = 1
-                n_temperature = json['Temperature']
                 n_CO2 = json['CO2']
                 n_humidity = json['Humidity']
-                n_minTemp = json['min_temp']
-                n_maxTemp = json['max_temp']
                 n_when = json['When']
                 n_when = n_when / 10
                 n_batteryPercent = json['battery_percent']
@@ -448,28 +435,19 @@ class indoorModuleNode(polyinterface.Node):
                 LOGGER.error('Failed to parse mower status JSON')
 
         except Exception as ex:
-            LOGGER.info('In exception handler, faking mower status')
-            self.setDriver('ST', 0, report=True, force=first)
-            self.setDriver('GV0', 0, report=True, force=first)
-            self.setDriver('GV1', 0, report=True, force=first)
-            self.setDriver('GV2', 0, report=True, force=first)
-            self.setDriver('GV3', 0, report=True, force=first)
-            self.setDriver('GV4', 0, report=True, force=first)
-            self.setDriver('GV5', 0, report=True, force=first)
-            self.setDriver('GV6', 0, report=True, force=first)
-            self.setDriver('GV7', 0, report=True, force=first)
-            self.setDriver('GV8', 0, report=True, force=first)
+            LOGGER.info('In exception handler, node data not found')
             LOGGER.debug('Skipping status: ' + str(ex.args[0]))
             return False
         return True
 
 class outdoorModuleNode(polyinterface.Node):
     id = 'out_netatmo'
+    name = ''
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
             {'driver': 'GV0', 'value': 0, 'uom': 17},   # temperature fahrenheit
-            {'driver': 'GV1', 'value': 0, 'uom': 21},   # humidity
+            {'driver': 'GV1', 'value': 0, 'uom': 22},   # humidity
             {'driver': 'GV2', 'value': 0, 'uom': 17},   # min temp
             {'driver': 'GV3', 'value': 0, 'uom': 17},   # max temp
             {'driver': 'GV4', 'value': 0, 'uom': 25},   # temp trend
@@ -498,13 +476,16 @@ class outdoorModuleNode(polyinterface.Node):
             LOGGER.debug(json)
 
             n_tempTrend = self.temp_trend(json)
+            n_temperature = json['Temperature']
+            n_temperature = get_temperature(n_temperature)
+            n_minTemp = json['min_temp']
+            n_minTemp = (n_minTemp)
+            n_maxTemp = json['max_temp']
+            n_maxTemp = get_temperature(n_maxTemp)
 
             try:
                 n_status = 1
-                n_temperature = json['Temperature']
                 n_humidity = json['Humidity']
-                n_minTemp = json['min_temp']
-                n_maxTemp = json['max_temp']
                 n_when = json['When']
                 n_when = n_when / 10
                 n_batteryPercent = json['battery_percent']
@@ -526,22 +507,14 @@ class outdoorModuleNode(polyinterface.Node):
                 LOGGER.error('Failed to parse mower status JSON')
 
         except Exception as ex:
-            LOGGER.info('In exception handler, faking mower status')
-            self.setDriver('ST', 0, report=True, force=first)
-            self.setDriver('GV0', 0, report=True, force=first)
-            self.setDriver('GV1', 0, report=True, force=first)
-            self.setDriver('GV2', 0, report=True, force=first)
-            self.setDriver('GV3', 0, report=True, force=first)
-            self.setDriver('GV4', 0, report=True, force=first)
-            self.setDriver('GV5', 0, report=True, force=first)
-            self.setDriver('GV6', 0, report=True, force=first)
-            self.setDriver('GV7', 0, report=True, force=first)
+            LOGGER.info('In exception handler, node data not found')
             LOGGER.debug('Skipping status: ' + str(ex.args[0]))
             return False
         return True
 
 class windModuleNode(polyinterface.Node):
     id = 'wind_netatmo'
+    name = ''
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
@@ -592,23 +565,14 @@ class windModuleNode(polyinterface.Node):
                 LOGGER.error('Failed to parse mower status JSON')
 
         except Exception as ex:
-            LOGGER.info('In exception handler, faking mower status')
-            self.setDriver('ST', 0, report=True, force=first)
-            self.setDriver('GV0', 0, report=True, force=first)
-            self.setDriver('GV1', 0, report=True, force=first)
-            self.setDriver('GV2', 0, report=True, force=first)
-            self.setDriver('GV3', 0, report=True, force=first)
-            self.setDriver('GV4', 0, report=True, force=first)
-            self.setDriver('GV5', 0, report=True, force=first)
-            self.setDriver('GV6', 0, report=True, force=first)
-            self.setDriver('GV7', 0, report=True, force=first)
-            self.setDriver('GV8', 0, report=True, force=first)
+            LOGGER.info('In exception handler, node data not found')
             LOGGER.debug('Skipping status: ' + str(ex.args[0]))
             return False
         return True
 
 class rainModuleNode(polyinterface.Node):
     id = 'rain_netatmo'
+    name = ''
     lastData = None
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 2},   # status
@@ -650,18 +614,38 @@ class rainModuleNode(polyinterface.Node):
                 LOGGER.error('Failed to parse mower status JSON')
 
         except Exception as ex:
-            LOGGER.info('In exception handler, faking mower status')
-            self.setDriver('ST', 0, report=True, force=first)
-            self.setDriver('GV0', 0, report=True, force=first)
-            self.setDriver('GV1', 0, report=True, force=first)
-            self.setDriver('GV2', 0, report=True, force=first)
-            self.setDriver('GV3', 0, report=True, force=first)
-            self.setDriver('GV4', 0, report=True, force=first)
-            self.setDriver('GV5', 0, report=True, force=first)
+            LOGGER.info('In exception handler, node data not found')
             LOGGER.debug('Skipping status: ' + str(ex.args[0]))
             return False
         return True
 
+def round_half_up(self, num, decimals = 0):
+    temp_dec = 10 ** decimals
+    result = num * temp_dec
+    result = result + 0.5
+    result = int(result)
+    result = result / temp_dec
+    return result
+
+def get_temperature(self, temp_value):
+    try:
+        temp_value = temp_value / 5
+        temp_value = temp_value * 9
+        temp_value = temp_value + 32
+        temp_value = round_half_up(temp_value,1)
+        return temp_value
+    except:
+        LOGGER.info('Failed to convert temperature')
+    return 0
+
+def get_pressure(self, pressure_value):
+    try:
+        pressure_value = pressure_value * 0.02953
+        pressure_value = round_half_up(pressure_value,2)
+        return pressure_value
+    except:
+        LOGGER.info('Failed to convert temperature')
+    return 0
 
 if __name__ == "__main__":
     try:

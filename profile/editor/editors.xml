@@ -12,7 +12,7 @@
     </editor>
 
     <editor id="co2">
-        <range uom="54" prec="1" />
+        <range uom="54" prec="0" />
     </editor>
 
     <editor id="humidity">
@@ -44,7 +44,7 @@
     </editor>
 
     <editor id="rain">
-        <range uom="23" min="0" max="100000" prec="0" />
+        <range uom="23" min="0" max="100000" prec="3" />
     </editor>
 
     <editor id="w_strength">
