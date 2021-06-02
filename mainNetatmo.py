@@ -24,7 +24,7 @@ class Controller(polyinterface.Controller):
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
         self.name = 'Netatmo Weather Station'
-        self.address = 'netatmo-ws'
+        self.address = 'netatmo_ws'
         self.primary = self.address
         self.configured = False
         self.myConfig = {}
