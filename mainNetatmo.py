@@ -316,7 +316,7 @@ class mainModuleNode(polyinterface.Node):
             n_pressure = json['Pressure']
             n_pressure = get_pressure(n_pressure)
             n_absolutePressure = json['AbsolutePressure']
-            n_absolutePressure = self.get_pressure(n_absolutePressure)
+            n_absolutePressure = get_pressure(n_absolutePressure)
             try:
                 n_status = 1
                 n_CO2 = json['CO2']
