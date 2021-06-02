@@ -19,7 +19,7 @@ import lnetatmo
 
 LOGGER = polyinterface.LOGGER
 
-def round_half_up(self, num, decimals = 0):
+def round_half_up(num, decimals = 0):
     temp_dec = 10 ** decimals
     result = num * temp_dec
     result = result + 0.5
@@ -27,7 +27,7 @@ def round_half_up(self, num, decimals = 0):
     result = result / temp_dec
     return result
 
-def get_temperature(self, temp_value):
+def get_temperature(temp_value):
     try:
         temp_value = temp_value / 5
         temp_value = temp_value * 9
@@ -38,7 +38,7 @@ def get_temperature(self, temp_value):
         LOGGER.info('Failed to convert temperature')
     return 0
 
-def get_pressure(self, pressure_value):
+def get_pressure(pressure_value):
     try:
         pressure_value = pressure_value * 0.02953
         pressure_value = round_half_up(pressure_value,2)
