@@ -130,6 +130,7 @@ class Controller(polyinterface.Controller):
         self.lastData = self.weatherStation.lastData()
         for node in self.nodes:
             #if self.nodes[node].id == 'main_netatmo':
+            LOGGER.info('Short Poll ID : ' + self.nodes[node].id)
             self.nodes[node].weatherStation = self.weatherStation
             self.nodes[node].lastData = self.lastData
             self.nodes[node].get_status(False)
