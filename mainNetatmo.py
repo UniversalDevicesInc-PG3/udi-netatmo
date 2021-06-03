@@ -127,8 +127,11 @@ class Controller(polyinterface.Controller):
     def shortPoll(self):
         LOGGER.info('Short Poll 1')
         self.weatherStation = lnetatmo.WeatherStationData(self.session)
+        LOGGER.info('Short Poll 2')
         self.lastData = self.weatherStation.lastData()
+        LOGGER.info('Short Poll 3')
         for node in self.nodes:
+            LOGGER.info('Short Poll 4')
             if self.nodes[node].id != 'Netatmo':
                 LOGGER.info('Short Poll ID : ' + self.nodes[node].id)
                 self.nodes[node].weatherStation = self.weatherStation
