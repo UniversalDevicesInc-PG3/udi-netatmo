@@ -126,14 +126,18 @@ class Controller(polyinterface.Controller):
 
     def shortPoll(self):
         LOGGER.info('Short Poll 1')
-        self.weatherStation = lnetatmo.WeatherStationData(self.session)
-        LOGGER.info('Short Poll 2')
+        try:
+            self.weatherStation = lnetatmo.WeatherStationData(self.session)
+        except:
+            LOGGER.info('Short Poll Exception 1')
+            self.session = lnetatmo.ClientAuth(clientId=self.clientId, clientSecret=self.clientSecret, username=self.username, password=self.password)
+            LOGGER.info('Short Poll Exception 2')
+            self.weatherStation = lnetatmo.WeatherStationData(self.session)
+            LOGGER.info('Short Poll Exception 3')
+
         self.lastData = self.weatherStation.lastData()
-        LOGGER.info('Short Poll 3')
         for node in self.nodes:
-            LOGGER.info('Short Poll 4')
             if self.nodes[node].id != 'Netatmo':
-                LOGGER.info('Short Poll ID : ' + self.nodes[node].id)
                 self.nodes[node].weatherStation = self.weatherStation
                 self.nodes[node].lastData = self.lastData
                 self.nodes[node].get_status(False)
