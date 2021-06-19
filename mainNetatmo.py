@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
 Polyglot v2 node server Netatmo Weather Station status
+This project is based on the "udi-owm-poly" code from Bob Paauwe (https://github.com/bpaauwe/udi-owm-poly/)
+and uses the "lnetatmo" library from Philippe Larduinat (https://github.com/philippelt/netatmo-api-python)
 Copyright (C) 2021 Daniel Caldentey
 """
 CLOUD = False
@@ -125,15 +127,11 @@ class Controller(polyinterface.Controller):
         pass
 
     def shortPoll(self):
-        LOGGER.info('Short Poll 1')
         try:
             self.weatherStation = lnetatmo.WeatherStationData(self.session)
         except:
-            LOGGER.info('Short Poll Exception 1')
-            self.session = lnetatmo.ClientAuth(clientId=self.clientId, clientSecret=self.clientSecret, username=self.username, password=self.password)
-            LOGGER.info('Short Poll Exception 2')
-            self.weatherStation = lnetatmo.WeatherStationData(self.session)
-            LOGGER.info('Short Poll Exception 3')
+            LOGGER.info('Authentication from library failed - Restarting NodeServer')
+            self.poly.restart()
 
         self.lastData = self.weatherStation.lastData()
         for node in self.nodes:
