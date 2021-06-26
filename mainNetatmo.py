@@ -247,11 +247,15 @@ class Controller(polyinterface.Controller):
         LOGGER.info('REMOVE NOTICES Controller')
         self.removeNoticesAll()
 
+    def query_all(self, command):
+        LOGGER.info('Query All')
+        self.shortPoll()
 
     commands = {
             'DISCOVER': discover,
             'UPDATE_PROFILE': update_profile,
-            'REMOVE_NOTICES_ALL': remove_notices_all
+            'REMOVE_NOTICES_ALL': remove_notices_all,
+            'QUERY_ALL': query_all
             }
 
     drivers = [
