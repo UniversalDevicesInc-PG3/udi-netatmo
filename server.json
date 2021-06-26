@@ -9,13 +9,13 @@
     "notice": "",
     "shortPoll": "600",
     "longPoll": "1200",
-    "profile_version": "1.0.0",
+    "profile_version": "1.1.0",
     "credits": [
     	{
     		"title": "Netatmo Weather Station: A node server to view Netatmo Weather Station",
     		"author": "Dani",
-    		"version": "1.0.0",
-    		"date": "May 28, 2021",
+    		"version": "1.1.0",
+    		"date": "Junee 26, 2021",
     		"source": "https://github.com/danielcaldentey/udi-netatmo",
 		    "license": "https://github.com/danielcaldentey/udi-netatmo/LICENSE"
 		}

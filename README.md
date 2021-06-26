@@ -62,5 +62,7 @@ The Netatmo Weather Station NodeServer keeps track of the version number and whe
 
 # Release Notes
 
-- 0.0.1 05/03/2019
+- 1.0.0 06/21/2021
    - Initial version published to github
+- 1.1.0 06/26/2021
+   - Added "Query All" Command to NodeServer
