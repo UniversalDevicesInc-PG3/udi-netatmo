@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
 """
-Polyglot v2 node server Netatmo Weather Station status
+Polyglot v3 node server Netatmo Weather Station status
 This project is based on the "udi-owm-poly" code from Bob Paauwe (https://github.com/bpaauwe/udi-owm-poly/)
 and uses the "lnetatmo" library from Philippe Larduinat (https://github.com/philippelt/netatmo-api-python)
 Copyright (C) 2021 Daniel Caldentey
 """
-CLOUD = False
-try:
-    import polyinterface
-except ImportError:
-    import pgc_interface as polyinterface
-    CLOUD = True
+import udi_interface
 from os import name
 from platform import node
 from ssl import match_hostname
 import sys
 import json
 import lnetatmo
-#import requests
 
-LOGGER = polyinterface.LOGGER
+LOGGER = udi_interface.LOGGER
 
 def round_half_up(num, decimals = 0):
     temp_dec = 10 ** decimals
@@ -50,15 +44,14 @@ def get_pressure(pressure_value):
     return 0
 
 
-class Controller(polyinterface.Controller):
+class Controller(udi_interface.Node):
     id = 'Netatmo'
-    def __init__(self, polyglot):
-        super(Controller, self).__init__(polyglot)
+    def __init__(self, polyglot, primary, address, name):
+        super(Controller, self).__init__(polyglot, primary, address, name)
         self.name = 'Netatmo Weather Station'
         self.address = 'netatmo_ws'
         self.primary = self.address
         self.configured = False
-        self.myConfig = {}
         self.username = ''
         self.password = ''
         self.clientId = ''
@@ -68,82 +61,77 @@ class Controller(polyinterface.Controller):
         self.weatherStation = None
         self.lastData = None
 
-        self.poly.onConfig(self.process_config)
+        polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
+        polyglot.subscribe(polyglot.POLL, self.poll)
+
+        polyglot.ready()
+        polyglot.addNode(self)
 
     # Process changes to customParameters
-    def process_config(self, config):
-        if 'customParams' in config:
-            # Check if anything we care about was changed...
-            if config['customParams'] != self.myConfig:
-                changed = False
+    def parameterHandler(self, params):
+        self.poly.Notices.clear()
 
-                if 'Username' in self.myConfig:
-                    if self.myConfig['Username'] != config['customParams']['Username']:
-                        changed = True
-                elif 'Username' in config['customParams']:
-                    if config['customParams']['Username'] != "":
-                        changed = True
+        if 'Username' in params:
+            self.username = params['Username']
 
-                if 'Password' in self.myConfig:
-                    if self.myConfig['Password'] != config['customParams']['Password']:
-                        changed = True
-                elif 'Password' in config['customParams']:
-                    if config['customParams']['Password'] != "":
-                        changed = True
+        if 'Password' in params:
+            self.password = params['Password']
 
-                if 'ClientID' in self.myConfig:
-                    if self.myConfig['ClientID'] != config['customParams']['ClientID']:
-                        changed = True
-                elif 'ClientID' in config['customParams']:
-                    if config['customParams']['ClientID'] != "":
-                        changed = True
+        if 'ClientID' in params:
+            self.clientId = params['ClientID']
 
-                if 'ClientSecret' in self.myConfig:
-                    if self.myConfig['ClientSecret'] != config['customParams']['ClientSecret']:
-                        changed = True
-                elif 'ClientSecret' in config['customParams']:
-                    if config['customParams']['ClientSecret'] != "":
-                        changed = True
+        if 'ClientSecret' in params:
+            self.clientSecret = params['ClientSecret']
 
-                self.myConfig = config['customParams']
-                if changed:
-                    self.username = config['customParams']['Username']
-                    self.password = config['customParams']['Password']
-                    self.clientId = config['customParams']['ClientID']
-                    self.clientSecret = config['customParams']['ClientSecret']
-                    self.configured = True
-                    self.removeNoticesAll()
-                    self.discover()
+        if self.username == '':
+            self.poly.Notices['user'] = 'Please enter the Netatmo user name'
+        if self.password == '':
+            self.poly.Notices['pass'] = 'Please enter the Netatmo password'
+        if self.clientId == '':
+            self.poly.Notices['id'] = 'Please enter the Netatmo client ID'
+        if self.clientSecret == '':
+            self.poly.Notices['secret'] = 'Please enter the Netatmo client secret'
+
+        if self.username is not '' and self.password is not '' and self.clientID is not '' and self.clientSecret is not '':
+            self.configured = True
+            self.discover()
 
     def start(self):
         LOGGER.info('Starting node server')
-        self.check_params()
+        self.poly.updateProfile()
+        self.poly.setCustomParamsDoc()
+        
+        while not self.configured:
+            time.sleep(1)
+
         self.session = lnetatmo.ClientAuth(clientId=self.clientId, clientSecret=self.clientSecret, username=self.username, password=self.password)
         #self.session = lnetatmo.ClientAuth()
         self.discover()
         LOGGER.info('Node server started')
 
-    def longPoll(self):
-        pass
+    def poll(self, polltype):
+        if not self.configured:
+            return
 
-    def shortPoll(self):
-        try:
-            self.weatherStation = lnetatmo.WeatherStationData(self.session)
-        except:
-            LOGGER.info('Authentication from library failed - Restarting NodeServer')
-            self.poly.restart()
+        if 'shortPoll' in polltype:
+            try:
+                self.weatherStation = lnetatmo.WeatherStationData(self.session)
+            except:
+                LOGGER.info('Authentication from library failed - Restarting NodeServer')
+                self.poly.restart()
 
-        self.lastData = self.weatherStation.lastData()
-        for node in self.nodes:
-            if self.nodes[node].id != 'Netatmo':
-                self.nodes[node].weatherStation = self.weatherStation
-                self.nodes[node].lastData = self.lastData
-                self.nodes[node].get_status(False)
+            self.lastData = self.weatherStation.lastData()
+            for node in self.poly.nodes():
+                if node.id != 'Netatmo':
+                    node.weatherStation = self.weatherStation
+                    node.lastData = self.lastData
+                    node.get_status(False)
 
     def query(self):
         LOGGER.info('QUERY Controller')
-        for node in self.nodes:
-            self.nodes[node].reportDrivers()
+        for node in self.poly.nodes():
+            node.reportDrivers()
 
     def discover(self, *args, **kwargs):
         # Discover the list of available modules and create the right node
@@ -164,36 +152,36 @@ class Controller(polyinterface.Controller):
                 if 'Noise' in self.lastData[moduleName]:
                     #Master Module
                     nodeAddress = 'netwsmain'
-                    weatherStation_node = mainModuleNode(self, self.address, nodeAddress,moduleName)
+                    weatherStation_node = mainModuleNode(self.poly, self.address, nodeAddress,moduleName)
                     LOGGER.info('Master Module')
                 elif 'CO2' in self.lastData[moduleName]:
                     #Indoor Module
                     nodeAddress = 'netwsin' + str(i)
-                    weatherStation_node = indoorModuleNode(self, self.address, nodeAddress,moduleName)
+                    weatherStation_node = indoorModuleNode(self.poly, self.address, nodeAddress,moduleName)
                     LOGGER.info('Indoor Module')
                     i = i + 1
                 elif 'Temperature' in self.lastData[moduleName]:
                     #Outside Module
                     nodeAddress = 'netwsout'
-                    weatherStation_node = outdoorModuleNode(self, self.address, nodeAddress,moduleName)
+                    weatherStation_node = outdoorModuleNode(self.poly, self.address, nodeAddress,moduleName)
                     LOGGER.info('Outside Module')
                 elif 'WindStrength' in self.lastData[moduleName]:
                     #Wind Module
                     nodeAddress = 'netwswind'
-                    weatherStation_node = windModuleNode(self, self.address, nodeAddress,moduleName)
+                    weatherStation_node = windModuleNode(self.poly, self.address, nodeAddress,moduleName)
                     LOGGER.info('Wind Module')
                 elif 'Rain' in self.lastData[moduleName]:
                     #Rain Module
                     nodeAddress = 'netwsrain'
-                    weatherStation_node = rainModuleNode(self, self.address, nodeAddress,moduleName)
+                    weatherStation_node = rainModuleNode(self.poly, self.address, nodeAddress,moduleName)
                     LOGGER.info('Rain Module')
                 else:
                     LOGGER.info('Unidentified Module')
 
                 weatherStation_node.lastData = self.lastData
                 weatherStation_node.name = moduleName
-                self.addNode(weatherStation_node)
-                self.nodes[nodeAddress].get_status(True)
+                self.poly.addNode(weatherStation_node)
+                weatherStation_node.get_status(True)
 
         except:
             LOGGER.error('Authentication failed or no modules found.')
@@ -210,51 +198,12 @@ class Controller(polyinterface.Controller):
         except:
             LOGGER.debug('session logout failed')
 
-    def update_profile(self, command):
-        LOGGER.info('UPDATE PROFILE Controller')
-        st = self.poly.installprofile()
-        return st
-
-    def check_params(self):
-        LOGGER.info('CHECK PARAMS Controller')
-        self.configured = True
-
-        if 'Username' in self.polyConfig['customParams']:
-            self.username = self.polyConfig['customParams']['Username']
-
-        if 'Password' in self.polyConfig['customParams']:
-            self.password = self.polyConfig['customParams']['Password']
-
-        if 'ClientID' in self.polyConfig['customParams']:
-            self.clientId = self.polyConfig['customParams']['ClientID']
-
-        if 'ClientSecret' in self.polyConfig['customParams']:
-            self.clientSecret = self.polyConfig['customParams']['ClientSecret']
-
-        self.addCustomParam( {
-            'Username': self.username,
-            'Password': self.password,
-            'ClientID' : self.clientId,
-            'ClientSecret' :self.clientSecret
-            })
-
-        if self.username == '' or self.password == '' or self.clientId == '' or self.clientSecret == '':
-            self.configured = False
-
-        self.removeNoticesAll()
-
-    def remove_notices_all(self, command):
-        LOGGER.info('REMOVE NOTICES Controller')
-        self.removeNoticesAll()
-
     def query_all(self, command):
         LOGGER.info('Query All')
         self.shortPoll()
 
     commands = {
             'DISCOVER': discover,
-            'UPDATE_PROFILE': update_profile,
-            'REMOVE_NOTICES_ALL': remove_notices_all,
             'QUERY_ALL': query_all
             }
 
@@ -262,7 +211,7 @@ class Controller(polyinterface.Controller):
             {'driver': 'ST', 'value': 1, 'uom': 2},   # node server status
             ]
 
-class mainModuleNode(polyinterface.Node):
+class mainModuleNode(udi_interface.Node):
     id = 'main_netatmo'
     name = ''
     lastData = None
@@ -366,7 +315,7 @@ class mainModuleNode(polyinterface.Node):
             return False
         return True
 
-class indoorModuleNode(polyinterface.Node):
+class indoorModuleNode(udi_interface.Node):
     id = 'in_netatmo'
     name = ''
     lastData = None
@@ -441,7 +390,7 @@ class indoorModuleNode(polyinterface.Node):
             return False
         return True
 
-class outdoorModuleNode(polyinterface.Node):
+class outdoorModuleNode(udi_interface.Node):
     id = 'out_netatmo'
     name = ''
     lastData = None
@@ -513,7 +462,7 @@ class outdoorModuleNode(polyinterface.Node):
             return False
         return True
 
-class windModuleNode(polyinterface.Node):
+class windModuleNode(udi_interface.Node):
     id = 'wind_netatmo'
     name = ''
     lastData = None
@@ -571,7 +520,7 @@ class windModuleNode(polyinterface.Node):
             return False
         return True
 
-class rainModuleNode(polyinterface.Node):
+class rainModuleNode(udi_interface.Node):
     id = 'rain_netatmo'
     name = ''
     lastData = None
@@ -623,10 +572,10 @@ class rainModuleNode(polyinterface.Node):
 
 if __name__ == "__main__":
     try:
-        polyglot = polyinterface.Interface('Netatmo')
+        polyglot = udi_interface.Interface([])
         polyglot.start()
-        control = Controller(polyglot)
-        control.runForever()
+        Controller(polyglot, 'controller', 'controller', 'Netatmo')
+        polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
         
