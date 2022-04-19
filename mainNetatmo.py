@@ -66,7 +66,7 @@ class Controller(udi_interface.Node):
         polyglot.subscribe(polyglot.POLL, self.poll)
 
         polyglot.ready()
-        polyglot.addNode(self)
+        polyglot.addNode(self, conn_status="ST")
 
     # Process changes to customParameters
     def parameterHandler(self, params):
