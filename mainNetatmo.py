@@ -573,7 +573,7 @@ class rainModuleNode(udi_interface.Node):
 if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([])
-        polyglot.start()
+        polyglot.start('2.0.0')
         Controller(polyglot, 'controller', 'controller', 'Netatmo')
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
