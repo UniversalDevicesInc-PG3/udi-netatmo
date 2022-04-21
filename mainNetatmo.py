@@ -93,7 +93,7 @@ class Controller(udi_interface.Node):
         if self.clientSecret == '':
             self.poly.Notices['secret'] = 'Please enter the Netatmo client secret'
 
-        if self.username is not '' and self.password is not '' and self.clientID is not '' and self.clientSecret is not '':
+        if self.username is not '' and self.password is not '' and self.clientId is not '' and self.clientSecret is not '':
             self.configured = True
             self.discover()
 
@@ -573,7 +573,7 @@ class rainModuleNode(udi_interface.Node):
 if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([])
-        polyglot.start('2.0.0')
+        polyglot.start('2.0.1')
         Controller(polyglot, 'controller', 'controller', 'Netatmo')
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
