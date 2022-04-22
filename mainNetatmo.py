@@ -95,6 +95,7 @@ class Controller(udi_interface.Node):
 
         if self.username is not '' and self.password is not '' and self.clientId is not '' and self.clientSecret is not '':
             self.configured = True
+            self.session = lnetatmo.ClientAuth(clientId=self.clientId, clientSecret=self.clientSecret, username=self.username, password=self.password)
             self.discover()
 
     def start(self):
@@ -105,9 +106,8 @@ class Controller(udi_interface.Node):
         while not self.configured:
             time.sleep(1)
 
-        self.session = lnetatmo.ClientAuth(clientId=self.clientId, clientSecret=self.clientSecret, username=self.username, password=self.password)
         #self.session = lnetatmo.ClientAuth()
-        self.discover()
+        #self.discover()
         LOGGER.info('Node server started')
 
     def poll(self, polltype):
@@ -183,8 +183,8 @@ class Controller(udi_interface.Node):
                 self.poly.addNode(weatherStation_node)
                 weatherStation_node.get_status(True)
 
-        except:
-            LOGGER.error('Authentication failed or no modules found.')
+        except Exception as e:
+            LOGGER.error('Authentication failed or no modules found. {}'.format(e))
             
 
     # Delete the node server from Polyglot
@@ -573,7 +573,7 @@ class rainModuleNode(udi_interface.Node):
 if __name__ == "__main__":
     try:
         polyglot = udi_interface.Interface([])
-        polyglot.start('2.0.1')
+        polyglot.start('2.0.2')
         Controller(polyglot, 'controller', 'controller', 'Netatmo')
         polyglot.runForever()
     except (KeyboardInterrupt, SystemExit):
