@@ -93,7 +93,7 @@ class Controller(udi_interface.Node):
         if self.clientSecret == '':
             self.poly.Notices['secret'] = 'Please enter the Netatmo client secret'
 
-        if self.username is not '' and self.password is not '' and self.clientId is not '' and self.clientSecret is not '':
+        if self.username != '' and self.password != '' and self.clientId != '' and self.clientSecret != '':
             self.configured = True
             self.session = lnetatmo.ClientAuth(clientId=self.clientId, clientSecret=self.clientSecret, username=self.username, password=self.password)
             self.discover()
