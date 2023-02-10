@@ -21,8 +21,8 @@
     	{
     		"title": "Netatmo Weather Station: A node server to view Netatmo Weather Station",
     		"author": "Dani",
-    		"version": "2.0.2",
-    		"date": "April 21, 2022",
+    		"version": "2.0.3",
+    		"date": "Feb 10, 2023",
     		"source": "https://github.com/UniversalDevicesInc-PG3/udi-netatmo",
 		    "license": "https://github.com/UniversalDevicesInc-PG3/udi-netatmo/LICENSE"
 		}
