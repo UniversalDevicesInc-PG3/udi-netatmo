@@ -110,6 +110,15 @@ class Controller(udi_interface.Node):
         #self.discover()
         LOGGER.info('Node server started')
 
+    def connect(self):
+        try:
+            self.session = lnetatmo.ClientAuth(clientId=self.clientId, clientSecret=self.clientSecret, username=self.username, password=self.password)
+            self.weatherStation = lnetatmo.WeatherStationData(self.session)
+            return True
+        except Exception as e:
+            LOGGER.error('Unable to connect to Netatmo severs:: {}'.format(str(e)))
+        return False
+
     def poll(self, polltype):
         if not self.configured:
             return
@@ -118,8 +127,9 @@ class Controller(udi_interface.Node):
             try:
                 self.weatherStation = lnetatmo.WeatherStationData(self.session)
             except:
-                LOGGER.info('Authentication from library failed - Restarting NodeServer')
-                self.poly.restart()
+                LOGGER.info('Authentication from library failed.')
+                if not self.connect():
+                    return
 
             self.lastData = self.weatherStation.lastData()
             for node in self.poly.nodes():
